@@ -1,13 +1,1529 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BoBo | Creative Project Coordinator & Developer</title>
+
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP & ScrollTrigger CDNs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Configure Tailwind theme to match standard React design tokens -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              display: ['"Playfair Display"', 'Georgia', 'serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Custom CSS Core Stylesheets -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300..900;1,300..900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f8f7f2; /* Warm Editorial Cream */
+        color: #1a1a1a; /* Ink Charcoal */
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f0ea;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #d1cfc4;
+        border-radius: 9999px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #1a1a1a;
+      }
+
+      /* Custom Editorial Styling Utilities */
+      .serif-display {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+
+      .writing-vertical {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+      }
+
+      /* GSAP Horizontal Scroll Pin Spacer Correction */
+      .pin-spacer {
+        background-color: transparent !important;
+      }
+
+      /* Text Selection Gradients */
+      ::selection {
+        background: #1a1a1a;
+        color: #f8f7f2;
+      }
+
+      /* Custom Elastic Animation Timing Curve */
+      .ease-elastic {
+        transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      /* Hide Native Cursor when JS is active */
+      .hide-native-cursor,
+      .hide-native-cursor * {
+        cursor: none !important;
+      }
+
+      /* Dark Mode Simple Inversion Trick */
+      html.dark-theme {
+        filter: invert(1) hue-rotate(180deg);
+        background-color: #f8f7f2;
+      }
+      html.dark-theme img, 
+      html.dark-theme canvas {
+        filter: invert(1) hue-rotate(180deg);
+      }
+    </style>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="relative min-h-screen bg-[#f8f7f2] text-[#1a1a1a] overflow-x-hidden antialiased">
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      BACKGROUND VISUAL GRAPH - INTERACTIVE CANVAS & GLOW ELEMENTS
+      -----------------------------------------------------------------------------
+    -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+      <!-- Floating Creative Icons Container -->
+      <div id="floating-icons" class="absolute inset-0 overflow-hidden opacity-20"></div>
+
+      <canvas id="bg-canvas" class="absolute inset-0 w-full h-full block"></canvas>
+      
+      <!-- Soft elegant editorial gradients -->
+      <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full bg-gradient-to-tr from-[#1a1a1a]/3 to-transparent blur-[120px]"></div>
+      <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[70vw] h-[70vw] rounded-full bg-gradient-to-tr from-[#8B5CF6]/5 to-transparent blur-[160px]"></div>
+    </div>
+
+    <!-- Modern floating top bar for immersive brand context -->
+    <header class="fixed top-0 left-0 w-full z-50 px-6 py-4 md:px-12 flex justify-between items-center backdrop-blur-md bg-[#f8f7f2]/70 border-b border-[#1a1a1a]/10">
+      <div id="brand-signature" class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-[#1a1a1a] flex items-center justify-center text-[#f8f7f2] font-semibold text-xs select-none" style="font-family: 'Playfair Display', serif;">
+          BB
+        </div>
+        <div class="flex flex-col">
+          <span class="font-semibold tracking-wider text-sm text-[#1a1a1a]" style="font-family: 'Playfair Display', serif;">BO BO</span>
+          <span class="text-[10px] text-zinc-500 tracking-widest uppercase">Odoo ERP // Business Analyst</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <nav class="hidden md:flex items-center gap-8 text-xs tracking-wider uppercase text-zinc-500" style="font-family: 'Playfair Display', serif;">
+          <a href="#about" class="hover:text-black transition-colors hover:border-b hover:border-black font-semibold">Coordinates</a>
+          <a href="#toolkit" class="hover:text-black transition-colors hover:border-b hover:border-black font-semibold">Toolkit</a>
+          <a href="#projects" class="hover:text-black transition-colors hover:border-b hover:border-black font-semibold">Timeline</a>
+          <a href="#education" class="hover:text-black transition-colors hover:border-b hover:border-black font-semibold">Coordinates</a>
+          <a href="#contact" class="hover:text-black transition-colors hover:border-b hover:border-black font-semibold">Contact & Links</a>
+        </nav>
+
+        <button 
+          id="dark-mode-toggle"
+          class="flex items-center justify-center p-2 rounded-full border border-[#1a1a1a]/20 bg-white/50 hover:border-[#1a1a1a] text-black transition-all shadow-sm z-50 cursor-pointer"
+        >
+          <i data-lucide="moon" class="w-4 h-4 toggle-icon-moon"></i>
+          <i data-lucide="sun" class="w-4 h-4 hidden toggle-icon-sun"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      HERO SECTION: TYPOGRAPHY MAJESTY & REVEALS
+      -----------------------------------------------------------------------------
+    -->
+    <section id="about" class="relative min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 pt-20 z-10 select-none">
+      
+      <!-- Left Vertical Tag -->
+      <div class="absolute left-6 md:left-12 lg:left-14 top-1/2 -translate-y-1/2 hidden xl:block pointer-events-none">
+        <div class="writing-vertical text-[10px] uppercase font-bold tracking-[0.5em] text-[#1a1a1a]/40 whitespace-nowrap">
+          ESTABLISHED / MMXXIV — ISSUE NO. 01
+        </div>
+      </div>
+
+      <!-- Elegant top metadata -->
+      <div class="flex items-center gap-2 mb-6 reveal-badge opacity-0 lg:pl-12">
+        <div class="h-[1px] w-8 bg-[#F97316]"></div>
+        <span class="text-xs uppercase tracking-[0.3em] text-[#F97316] font-mono font-bold">
+          ERP Implementation & Business Analysis
+        </span>
+      </div>
+
+      <!-- Huge Split Headline for GSAP Reveal -->
+      <h1 id="hero-headline" class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-[0.95] text-[#1a1a1a] max-w-5xl lg:pl-12" style="font-family: 'Playfair Display', serif;">
+        <span class="reveal-word inline-block mr-3 md:mr-5 transform origin-bottom text-[#1a1a1a] opacity-0">COORDINATING</span>
+        <span class="reveal-word inline-block mr-3 md:mr-5 transform origin-bottom text-[#1a1a1a] opacity-0">SEAMLESS</span>
+        <span class="reveal-word inline-block mr-3 md:mr-5 transform origin-bottom text-[#1a1a1a] opacity-0">ODOO</span>
+        <span class="reveal-word inline-block mr-3 md:mr-5 transform origin-bottom text-[#1a1a1a] opacity-0">ERP</span>
+        <span class="reveal-word inline-block mr-3 md:mr-5 transform origin-bottom text-[#1a1a1a] opacity-0">SUCCESS</span>
+      </h1>
+
+      <!-- Secondary Title Highlight -->
+      <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl reveal-sub opacity-0 lg:pl-12">
+        <p class="lg:col-span-6 text-base sm:text-lg md:text-xl text-zinc-700 font-light leading-relaxed">
+          A professional synthesis of <strong class="font-semibold text-black">Odoo ERP project management</strong>, systematic <strong class="font-semibold text-black">business process mapping</strong>, and targeted <strong class="font-semibold text-[#8B5CF6]">UI/UX design validation</strong>. Connecting client requirements to stable system architecture.
+        </p>
+
+        <div class="lg:col-span-[5] lg:col-start-8 flex flex-col justify-center gap-4 border-l-2 border-[#1a1a1a]/20 pl-6 py-2">
+          <div class="flex items-center gap-3 text-xs text-zinc-600">
+            <i data-lucide="map-pin" class="w-4 h-4 text-zinc-400"></i>
+            <span class="tracking-wide text-zinc-650">Coordinates: Tamwe, Yangon, Myanmar</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-zinc-600">
+            <i data-lucide="briefcase" class="w-4 h-4 text-[#F97316]"></i>
+            <span class="tracking-wide text-zinc-650 font-bold text-zinc-800">Active Track: ERP Project Coordinator & BA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll down indicator -->
+      <div class="absolute bottom-10 left-6 md:left-12 lg:left-24 flex items-center gap-3 text-[10px] tracking-widest uppercase text-zinc-500 reveal-sub opacity-0">
+        <span>SCROLL FOR TRACK TIMELINE</span>
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-zinc-500 animate-bounce"></i>
+      </div>
+
+      <div class="absolute bottom-10 right-6 md:right-12 text-[10px] tracking-widest font-mono text-zinc-500 text-right reveal-sub opacity-0">
+        <span>PORT_STATUS // LIVE_GRID</span>
+      </div>
+    </section>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      SKILLS TOOLKIT: MAGNETIC INTERACTIVE GLOW CARDS
+      -----------------------------------------------------------------------------
+    -->
+    <section id="toolkit" class="py-24 md:py-32 px-6 md:px-12 lg:px-24 border-t border-[#1a1a1a]/10 bg-[#f1f0e8]/50 relative z-10">
+      <div class="max-w-6xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="sparkles" class="w-4 h-4 text-[#8B5CF6]"></i>
+              <span class="text-xs uppercase tracking-widest font-mono text-[#8B5CF6]">TECHNICAL BLUEPRINT</span>
+            </div>
+            <h2 class="text-3xl md:text-5xl font-bold text-[#1a1a1a] tracking-tight" style="font-family: 'Playfair Display', Georgia, serif;">
+              An Agile Toolkit.
+            </h2>
+          </div>
+          <p class="text-sm text-zinc-600 max-w-md leading-relaxed">
+            Hover over cards below to test physical magnetic attraction dynamics and immersive accent glow responses designed specifically for system coordinators.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- CARD 1: Jira -->
+          <div 
+            class="group magnetic-card relative rounded-xl border border-[#1a1a1a]/10 bg-white/80 p-6 md:p-8 flex flex-col justify-between h-[300px] transition-all duration-300 overflow-hidden cursor-crosshair ease-elastic select-none shadow-[0_2px_10px_rgba(26,26,26,0.03)] hover:border-[#1a1a1a]/30"
+            data-theme-color="orange"
+            style="--glow-opacity: 0; --glow-x: 0px; --glow-y: 0px; --glow-color: rgba(249, 115, 22, 0.12);"
+          >
+            <!-- Internal glow layer -->
+            <div 
+              class="absolute inset-0 pointer-events-none transition-opacity duration-300 blur-[30px]"
+              style="opacity: var(--glow-opacity); background: radial-gradient(circle 120px at var(--glow-x) var(--glow-y), var(--glow-color), transparent 100%)"
+            ></div>
+            <div class="z-10">
+              <div class="w-10 h-10 rounded-lg bg-[#F97316]/10 flex items-center justify-center mb-6 border border-[#F97316]/20 group-hover:scale-110 transition-transform">
+                <img src="https://cdn.simpleicons.org/jira/0052CC" alt="Jira Logo" class="w-5 h-5" />
+              </div>
+              <h3 class="text-2xl font-medium text-[#1a1a1a] group-hover:text-black mb-2 leading-tight" style="font-family: 'Playfair Display', serif;">
+                Jira & Scrum
+              </h3>
+              <p class="text-xs text-zinc-600 leading-relaxed">
+                Agile workflow orchestration, milestone mappings, multi-timezone developer alignment, and direct KPI coordination.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-zinc-500 group-hover:text-[#F97316] transition-colors z-10">
+              <span>01 // governance.sys</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </div>
+          </div>
+
+          <!-- CARD 2: Figma -->
+          <div 
+            class="group magnetic-card relative rounded-xl border border-[#1a1a1a]/10 bg-white/80 p-6 md:p-8 flex flex-col justify-between h-[300px] transition-all duration-300 overflow-hidden cursor-crosshair ease-elastic select-none shadow-[0_2px_10px_rgba(26,26,26,0.03)] hover:border-[#1a1a1a]/30"
+            data-theme-color="violet"
+            style="--glow-opacity: 0; --glow-x: 0px; --glow-y: 0px; --glow-color: rgba(139, 92, 246, 0.12);"
+          >
+            <!-- Internal glow layer -->
+            <div 
+              class="absolute inset-0 pointer-events-none transition-opacity duration-300 blur-[30px]"
+              style="opacity: var(--glow-opacity); background: radial-gradient(circle 120px at var(--glow-x) var(--glow-y), var(--glow-color), transparent 100%)"
+            ></div>
+            <div class="z-10">
+              <div class="w-10 h-10 rounded-lg bg-[#8B5CF6]/10 flex items-center justify-center mb-6 border border-[#8B5CF6]/20 group-hover:scale-110 transition-transform">
+                <img src="https://cdn.simpleicons.org/figma/F24E1E" alt="Figma Logo" class="w-5 h-5" />
+              </div>
+              <h3 class="text-2xl font-medium text-[#1a1a1a] group-hover:text-black mb-2 leading-tight" style="font-family: 'Playfair Display', serif;">
+                Figma UI/UX
+              </h3>
+              <p class="text-xs text-zinc-600 leading-relaxed">
+                Figma wireframing, high-fidelity UI/UX design research, component design systems, and visual validation mappings.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-zinc-500 group-hover:text-[#8B5CF6] transition-colors z-10">
+              <span>02 // blueprint.fig</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </div>
+          </div>
+
+          <!-- CARD 3: Odoo ERP -->
+          <div 
+            class="group magnetic-card relative rounded-xl border border-[#1a1a1a]/10 bg-white/80 p-6 md:p-8 flex flex-col justify-between h-[300px] transition-all duration-300 overflow-hidden cursor-crosshair ease-elastic select-none shadow-[0_2px_10px_rgba(26,26,26,0.03)] hover:border-[#1a1a1a]/30"
+            data-theme-color="orange"
+            style="--glow-opacity: 0; --glow-x: 0px; --glow-y: 0px; --glow-color: rgba(249, 115, 22, 0.12);"
+          >
+            <!-- Internal glow layer -->
+            <div 
+              class="absolute inset-0 pointer-events-none transition-opacity duration-300 blur-[30px]"
+              style="opacity: var(--glow-opacity); background: radial-gradient(circle 120px at var(--glow-x) var(--glow-y), var(--glow-color), transparent 100%)"
+            ></div>
+            <div class="z-10">
+              <div class="w-10 h-10 rounded-lg bg-[#F97316]/10 flex items-center justify-center mb-6 border border-[#F97316]/20 group-hover:scale-110 transition-transform">
+                <img src="https://cdn.simpleicons.org/odoo/714B67" alt="Odoo Logo" class="w-5 h-5" />
+              </div>
+              <h3 class="text-2xl font-medium text-[#1a1a1a] group-hover:text-black mb-2 leading-tight" style="font-family: 'Playfair Display', serif;">
+                Odoo ERP
+              </h3>
+              <p class="text-xs text-zinc-600 leading-relaxed">
+                Configuring POS systems, custom module structures, third-party integrations (SFTP / gateways), and post-go-live helpdesk support.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-zinc-500 group-hover:text-[#F97316] transition-colors z-10">
+              <span>03 // database.orl</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </div>
+          </div>
+
+          <!-- CARD 4: AI Prototyping -->
+          <div 
+            class="group magnetic-card relative rounded-xl border border-[#1a1a1a]/10 bg-white/80 p-6 md:p-8 flex flex-col justify-between h-[300px] transition-all duration-300 overflow-hidden cursor-crosshair ease-elastic select-none shadow-[0_2px_10px_rgba(26,26,26,0.03)] hover:border-[#1a1a1a]/30"
+            data-theme-color="violet"
+            style="--glow-opacity: 0; --glow-x: 0px; --glow-y: 0px; --glow-color: rgba(139, 92, 246, 0.12);"
+          >
+            <!-- Internal glow layer -->
+            <div 
+              class="absolute inset-0 pointer-events-none transition-opacity duration-300 blur-[30px]"
+              style="opacity: var(--glow-opacity); background: radial-gradient(circle 120px at var(--glow-x) var(--glow-y), var(--glow-color), transparent 100%)"
+            ></div>
+            <div class="z-10">
+              <div class="w-10 h-10 rounded-lg bg-[#8B5CF6]/10 flex items-center justify-center mb-6 border border-[#8B5CF6]/20 group-hover:scale-110 transition-transform">
+                <i data-lucide="sparkles" class="w-5 h-5 text-[#8B5CF6]"></i>
+              </div>
+              <h3 class="text-2xl font-medium text-[#1a1a1a] group-hover:text-black mb-2 leading-tight" style="font-family: 'Playfair Display', serif;">
+                AI Prototyping
+              </h3>
+              <p class="text-xs text-zinc-600 leading-relaxed mt-2">
+                As a PM professional, I accelerate conceptual stages by prototyping robust business logic and UI/UX flows utilizing advanced AI accelerators like <strong class="text-zinc-800 font-semibold">Google AI Studio</strong>, <strong class="text-zinc-800 font-semibold">Cursor</strong>, and <strong class="text-zinc-800 font-semibold">GitHub Copilot</strong>.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-zinc-500 group-hover:text-[#8B5CF6] transition-colors z-10">
+              <span>04 // ai.accelerate</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      GLOBAL PROJECT TIMELINE SECTION: PINNING HORIZONTAL TIMELINE
+      -----------------------------------------------------------------------------
+    -->
+    <div id="projects" class="relative z-20">
+      
+      <!-- Horizontal Pin Wrapper -->
+      <section id="projects-pin-trigger" class="h-screen w-full flex items-center overflow-hidden bg-[#f1f0e8] relative border-t border-b border-[#1a1a1a]/10">
+        
+        <!-- Parallax Background Layers -->
+        <div class="parallax-bg absolute w-[300vw] h-full inset-0 pointer-events-none opacity-[0.15]">
+          <div class="absolute top-[10%] left-[20vw] w-64 h-64 rounded-full border border-[#1a1a1a]"></div>
+          <div class="absolute top-[60%] left-[80vw] w-96 h-96 rounded-full border border-[#1a1a1a]"></div>
+          <div class="absolute top-[20%] left-[140vw] w-[40rem] h-[40rem] rounded-full border border-[#F97316] bg-[#F97316]/5"></div>
+          <div class="absolute top-[30%] left-[220vw] w-72 h-72 rounded-full border border-[#1a1a1a]"></div>
+          <div class="absolute top-[70%] left-[280vw] w-[30rem] h-[30rem] rounded-full border border-[#8B5CF6] bg-[#8B5CF6]/5"></div>
+          <div class="absolute top-[15%] left-[340vw] w-[25rem] h-[25rem] rounded-full border border-[#1a1a1a]"></div>
+        </div>
+
+        <!-- Static Title Header inside pinned area -->
+        <div class="absolute top-10 left-6 md:left-12 lg:left-24 z-30 select-none">
+          <span class="text-[10px] font-mono tracking-[0.3em] text-[#F97316] uppercase block mb-1">
+            Active Project Timeline
+          </span>
+          <h2 class="text-xl md:text-3xl font-bold text-black tracking-tight flex items-center gap-3" style="font-family: 'Playfair Display', serif;">
+            Global Missions
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          </h2>
+        </div>
+
+        <!-- Indicator helper -->
+        <div class="absolute bottom-8 right-6 md:right-12 lg:right-24 z-30 hidden md:block">
+          <div class="flex items-center gap-3 bg-white/80 backdrop-blur-md border border-[#1a1a1a]/10 px-4 py-2 rounded-lg text-xs text-zinc-600 font-mono shadow-sm">
+            <i data-lucide="compass" class="w-4 h-4 text-[#8B5CF6] animate-spin" style="animation-duration: 6s;"></i>
+            <span>Scroll down to slide horizontal grid</span>
+          </div>
+        </div>
+
+        <!-- This container will be translated leftwards dynamically -->
+        <div 
+          id="horizontal-section" 
+          class="flex flex-row flex-nowrap items-center h-full pl-6 md:pl-12 lg:pl-24 gap-8 md:gap-12 lg:gap-24 w-max pr-[20vw]"
+        >
+          
+          <!-- --------------------------------------- -->
+          <!-- GROUP 1: SINGAPORE & ITALY OPERATIONS   -->
+          <!-- --------------------------------------- -->
+          <div class="w-[70vw] md:w-[35vw] lg:w-[25vw] max-w-[400px] flex-shrink-0 flex flex-col justify-center gap-4 pl-0 md:pl-12">
+            <i data-lucide="map-pin" class="w-8 h-8 text-[#8B5CF6]"></i>
+            <h3 class="text-3xl md:text-4xl font-bold text-[#1a1a1a] tracking-tight" style="font-family: 'Playfair Display', serif;">Singapore & Italy<br>Operations</h3>
+            <div class="h-1 w-12 bg-[#F97316] rounded-full mt-2"></div>
+          </div>
+
+          <!-- PROJECT 1: Min Jiang Kueh Food Chain -->
+          <div 
+            id="project-card-min-jiang-kueh"
+            class="w-[85vw] md:w-[68vw] lg:w-[60vw] max-w-[850px] flex-shrink-0 flex flex-col h-auto max-h-[85vh] bg-[#fafaf8] backdrop-blur-md rounded-2xl border border-[#1a1a1a]/15 p-5 md:p-10 relative overflow-y-auto overflow-x-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(26,26,26,0.03)] [&::-webkit-scrollbar]:hidden"
+            style="scrollbar-width: none;"
+          >
+            <!-- Background gradient corresponding to theme -->
+            <div class="absolute -top-1/4 -right-1/4 w-[350px] h-[350px] rounded-full blur-[100px] pointer-events-none opacity-10 bg-[#F97316]"></div>
+
+            <!-- Grid header details -->
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-8 border-b border-black/10 pb-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-wider text-zinc-500">
+                  <span>Singapore</span>
+                  <span>•</span>
+                  <span class="text-zinc-[650] font-sans">GCA Yangon // 2024 – 2026</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight leading-tight" style="font-family: 'Playfair Display', serif;">
+                  Min Jiang Kueh Food Chain
+                </h3>
+                <p class="text-xs md:text-sm font-medium text-zinc-600 uppercase tracking-wider mt-1 font-sans">
+                  Enterprise Odoo Setup & Multi-Outlet Integration
+                </p>
+              </div>
+
+              <span class="inline-block px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest uppercase border bg-[#F97316]/5 border-[#F97316]/30 text-[#F97316]">
+                Retail POS & Logistics
+              </span>
+            </div>
+
+            <!-- Project content split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center lg:items-start grow">
+              
+              <!-- Left Column Description -->
+              <div class="lg:col-span-7 flex flex-col justify-between h-full">
+                <div>
+                  <!-- Active coordinator role stamp -->
+                  <div class="flex items-center gap-2 mb-3 bg-zinc-150/80 border border-black/5 px-2 md:px-3 py-1.5 rounded w-fit">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-[#F97316]"></i>
+                    <span class="text-[9px] md:text-[10px] font-mono tracking-wider uppercase text-zinc-700 font-bold">
+                      Role: Odoo Project Coordinator & BA
+                    </span>
+                  </div>
+
+                  <p class="text-sm md:text-base text-zinc-700 font-light leading-relaxed mb-4">
+                    Led the comprehensive Odoo POS, central inventory management, and Tenet SFTP system integration for a traditional food chain across 21 active commercial outlets. Handled direct configurations and technical vendor communications.
+                  </p>
+
+                  <div class="space-y-2 mt-4">
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal">Successfully integrated Odoo POS with Adyen Payment Gateway and secure payment terminals</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Developed stable landlord SFTP configurations and automated schedule transfers for 15+ shopping malls</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Coordinated local and offshore team members to ensure a seamless, on-time go-live launch</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column Stats & Tech Stack tags -->
+              <div class="lg:col-span-5 flex flex-col justify-between h-full border-t lg:border-t-0 lg:border-l border-black/10 pt-4 lg:pt-0 lg:pl-8 mt-2 lg:mt-0">
+                
+                <!-- Unique Highlight metric -->
+                <div class="mb-6 bg-[#f8f7f2] rounded-xl p-4 border border-[#1a1a1a]/10">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+                    KEY DELIVERABLE METRIC
+                  </span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#F97316]" style="font-family: 'Playfair Display', serif;">
+                      21
+                    </span>
+                    <span class="text-[#1a1a1a] text-xs font-semibold tracking-wide font-sans">
+                      Active Retail Outlets
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-[#1a1a1a]/60 block mb-2">
+                    STACK COORDINATION
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Odoo POS & Inventory</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Adyen Payment Gateway</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Tenet Landlord SFTP</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Vendor Relations</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- PROJECT 2: Fleet Telematics Platform -->
+          <div 
+            id="project-card-vehicle-tracking"
+            class="w-[85vw] md:w-[68vw] lg:w-[60vw] max-w-[850px] flex-shrink-0 flex flex-col h-auto max-h-[85vh] bg-[#fafaf8] backdrop-blur-md rounded-2xl border border-[#1a1a1a]/15 p-5 md:p-10 relative overflow-y-auto overflow-x-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(26,26,26,0.03)] [&::-webkit-scrollbar]:hidden"
+            style="scrollbar-width: none;"
+          >
+            <!-- Background gradient corresponding to theme -->
+            <div class="absolute -top-1/4 -right-1/4 w-[350px] h-[350px] rounded-full blur-[100px] pointer-events-none opacity-10 bg-[#8B5CF6]"></div>
+
+            <!-- Grid header details -->
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-8 border-b border-black/10 pb-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-wider text-zinc-500">
+                  <span>Singapore // Italy</span>
+                  <span>•</span>
+                  <span class="text-zinc-[650] font-sans">Global Connect Asia // 2024 – 2026</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight leading-tight" style="font-family: 'Playfair Display', serif;">
+                  Fleet Telematics Platform
+                </h3>
+                <p class="text-xs md:text-sm font-medium text-zinc-600 uppercase tracking-wider mt-1 font-sans">
+                  Cross-Border Event Vehicle Fleet Tracker
+                </p>
+              </div>
+
+              <span class="inline-block px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest uppercase border bg-[#8B5CF6]/5 border-[#8B5CF6]/30 text-[#8B5CF6]">
+                IoT & Telematics
+              </span>
+            </div>
+
+            <!-- Project content split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center lg:items-start grow">
+              
+              <!-- Left Column Description -->
+              <div class="lg:col-span-7 flex flex-col justify-between h-full">
+                <div>
+                  <!-- Active coordinator role stamp -->
+                  <div class="flex items-center gap-2 mb-3 bg-zinc-150/80 border border-black/5 px-2 md:px-3 py-1.5 rounded w-fit">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-[#8B5CF6]"></i>
+                    <span class="text-[9px] md:text-[10px] font-mono tracking-wider uppercase text-zinc-700 font-bold">
+                      Role: Project Coordinator & BA
+                    </span>
+                  </div>
+
+                  <p class="text-sm md:text-base text-zinc-700 font-light leading-relaxed mb-4">
+                    Coordinated cross-functional product teams (offshore—Singapore/Italy) for the research, design, and deployment of a vehicle tracking solution. Managed helpdesk coordination, multi-system QA, and production release guidelines.
+                  </p>
+
+                  <div class="space-y-2 mt-4">
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal">Acquired user requirement frameworks to drive UI/UX research & mockups in Figma</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Managed direct system helpdesk support and escalated cross-platform tickets</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Guaranteed system quality control and standard production deployment safety compliance</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column Stats & Tech Stack tags -->
+              <div class="lg:col-span-5 flex flex-col justify-between h-full border-t lg:border-t-0 lg:border-l border-black/10 pt-4 lg:pt-0 lg:pl-8 mt-2 lg:mt-0">
+                
+                <!-- Unique Highlight metric -->
+                <div class="mb-6 bg-[#f8f7f2] rounded-xl p-4 border border-[#1a1a1a]/10">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+                    KEY DELIVERABLE METRIC
+                  </span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#8B5CF6]" style="font-family: 'Playfair Display', serif;">
+                      100%
+                    </span>
+                    <span class="text-[#1a1a1a] text-xs font-semibold tracking-wide font-sans">
+                      Deployment Checklist Compliance
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-[#1a1a1a]/60 block mb-2">
+                    STACK COORDINATION
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Figma Prototyping</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Scrum / Jira Management</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">API Integrations</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Quality Assurance</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- --------------------------------------- -->
+          <!-- GROUP 2: MALAYSIA OPERATIONS            -->
+          <!-- --------------------------------------- -->
+          <div class="w-[70vw] md:w-[35vw] lg:w-[25vw] max-w-[400px] flex-shrink-0 flex flex-col justify-center gap-4 pl-0 md:pl-12">
+            <i data-lucide="map-pin" class="w-8 h-8 text-[#8B5CF6]"></i>
+            <h3 class="text-3xl md:text-4xl font-bold text-[#1a1a1a] tracking-tight" style="font-family: 'Playfair Display', serif;">Malaysia<br>Operations</h3>
+            <div class="h-1 w-12 bg-[#F97316] rounded-full mt-2"></div>
+          </div>
+
+          <!-- PROJECT 3: Home Appliance Trading ERP -->
+          <div 
+            id="project-card-home-appliance-erp"
+            class="w-[85vw] md:w-[68vw] lg:w-[60vw] max-w-[850px] flex-shrink-0 flex flex-col h-auto max-h-[85vh] bg-[#fafaf8] backdrop-blur-md rounded-2xl border border-[#1a1a1a]/15 p-5 md:p-10 relative overflow-y-auto overflow-x-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(26,26,26,0.03)] [&::-webkit-scrollbar]:hidden"
+            style="scrollbar-width: none;"
+          >
+            <!-- Background gradient corresponding to theme -->
+            <div class="absolute -top-1/4 -right-1/4 w-[350px] h-[350px] rounded-full blur-[100px] pointer-events-none opacity-10 bg-[#F97316]"></div>
+
+            <!-- Grid header details -->
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-8 border-b border-black/10 pb-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-wider text-zinc-500">
+                  <span>Malaysia</span>
+                  <span>•</span>
+                  <span class="text-zinc-[650] font-sans">GCA Remote // 2024 – 2026</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight leading-tight" style="font-family: 'Playfair Display', serif;">
+                  Home Appliance Trading ERP
+                </h3>
+                <p class="text-xs md:text-sm font-medium text-zinc-600 uppercase tracking-wider mt-1 font-sans">
+                  System Stabilization and Legacy Debt Management
+                </p>
+              </div>
+
+              <span class="inline-block px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest uppercase border bg-[#F97316]/5 border-[#F97316]/30 text-[#F97316]">
+                Trading & Operations
+              </span>
+            </div>
+
+            <!-- Project content split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center lg:items-start grow">
+              
+              <!-- Left Column Description -->
+              <div class="lg:col-span-7 flex flex-col justify-between h-full">
+                <div>
+                  <!-- Active coordinator role stamp -->
+                  <div class="flex items-center gap-2 mb-3 bg-zinc-150/80 border border-black/5 px-2 md:px-3 py-1.5 rounded w-fit">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-[#F97316]"></i>
+                    <span class="text-[9px] md:text-[10px] font-mono tracking-wider uppercase text-zinc-700 font-bold">
+                      Role: Account Manager & BA
+                    </span>
+                  </div>
+
+                  <p class="text-sm md:text-base text-zinc-700 font-light leading-relaxed mb-4">
+                    Acted as corporate account manager and core Business Analyst to stabilize a complex Odoo instance for a regional trading firm. Resolved deep technical and logical debt to pave the way for succeeding operational phases.
+                  </p>
+
+                  <div class="space-y-2 mt-4">
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Directly analyzed old ledger structures and corrected database system mismatch issues</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Supervised customer helpdesk escalations and compiled thorough production deployment logs</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Serrated communication gaps between client executives and remote software engineers</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column Stats & Tech Stack tags -->
+              <div class="lg:col-span-5 flex flex-col justify-between h-full border-t lg:border-t-0 lg:border-l border-black/10 pt-4 lg:pt-0 lg:pl-8 mt-2 lg:mt-0">
+                
+                <!-- Unique Highlight metric -->
+                <div class="mb-6 bg-[#f8f7f2] rounded-xl p-4 border border-[#1a1a1a]/10">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+                    KEY DELIVERABLE METRIC
+                  </span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#F97316]" style="font-family: 'Playfair Display', serif;">
+                      0
+                    </span>
+                    <span class="text-[#1a1a1a] text-xs font-semibold tracking-wide font-sans">
+                      Critical Post-Stabilization Blocker Incidents
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-[#1a1a1a]/60 block mb-2">
+                    STACK COORDINATION
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Odoo ERP Optimization</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">SLA Administration</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Change Management</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Database Audit</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- --------------------------------------- -->
+          <!-- GROUP 3: FRANCE OPERATIONS              -->
+          <!-- --------------------------------------- -->
+          <div class="w-[70vw] md:w-[35vw] lg:w-[25vw] max-w-[400px] flex-shrink-0 flex flex-col justify-center gap-4 pl-0 md:pl-12">
+            <i data-lucide="map-pin" class="w-8 h-8 text-[#8B5CF6]"></i>
+            <h3 class="text-3xl md:text-4xl font-bold text-[#1a1a1a] tracking-tight" style="font-family: 'Playfair Display', serif;">France // Hybrid<br>Operations</h3>
+            <div class="h-1 w-12 bg-[#F97316] rounded-full mt-2"></div>
+          </div>
+
+          <!-- PROJECT 4: EU NGO Collaboration Media Platform -->
+          <div 
+            id="project-card-ngo-france"
+            class="w-[85vw] md:w-[68vw] lg:w-[60vw] max-w-[850px] flex-shrink-0 flex flex-col h-auto max-h-[85vh] bg-[#fafaf8] backdrop-blur-md rounded-2xl border border-[#1a1a1a]/15 p-5 md:p-10 relative overflow-y-auto overflow-x-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(26,26,26,0.03)] [&::-webkit-scrollbar]:hidden"
+            style="scrollbar-width: none;"
+          >
+            <!-- Background gradient corresponding to theme -->
+            <div class="absolute -top-1/4 -right-1/4 w-[350px] h-[350px] rounded-full blur-[100px] pointer-events-none opacity-10 bg-[#8B5CF6]"></div>
+
+            <!-- Grid header details -->
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-8 border-b border-black/10 pb-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-wider text-zinc-500">
+                  <span>France // Hybrid</span>
+                  <span>•</span>
+                  <span class="text-zinc-[650] font-sans">EU-Wide Coalition // 2024 – 2026</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight leading-tight" style="font-family: 'Playfair Display', serif;">
+                  EU NGO Collaboration Media platform
+                </h3>
+                <p class="text-xs md:text-sm font-medium text-zinc-600 uppercase tracking-wider mt-1 font-sans">
+                  Friendly User Training and UI/UX Strategy
+                </p>
+              </div>
+
+              <span class="inline-block px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest uppercase border bg-[#8B5CF6]/5 border-[#8B5CF6]/30 text-[#8B5CF6]">
+                Social Sector Tech
+              </span>
+            </div>
+
+            <!-- Project content split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center lg:items-start grow">
+              
+              <!-- Left Column Description -->
+              <div class="lg:col-span-7 flex flex-col justify-between h-full">
+                <div>
+                  <!-- Active coordinator role stamp -->
+                  <div class="flex items-center gap-2 mb-3 bg-zinc-150/80 border border-black/5 px-2 md:px-3 py-1.5 rounded w-fit">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-[#8B5CF6]"></i>
+                    <span class="text-[9px] md:text-[10px] font-mono tracking-wider uppercase text-zinc-700 font-bold">
+                      Role: System Coordinator & Designer
+                    </span>
+                  </div>
+
+                  <p class="text-sm md:text-base text-zinc-700 font-light leading-relaxed mb-4">
+                    Managed user onboarding and designed clean, highly accessible mobile and desktop interfaces in Figma. Coordinated digital training sessions to onboard international NGO delegates across varied technical fluencies.
+                  </p>
+
+                  <div class="space-y-2 mt-4">
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans font-sans">Designed responsive, elegant layout designs in Figma with interactive walkthrough blueprints</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Trained and onboarded non-technical volunteers on complex contact and newsletter management setups</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#8B5CF6]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Successfully mapped delegate permission boundaries into system configuration guides</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column Stats & Tech Stack tags -->
+              <div class="lg:col-span-5 flex flex-col justify-between h-full border-t lg:border-t-0 lg:border-l border-black/10 pt-4 lg:pt-0 lg:pl-8 mt-2 lg:mt-0">
+                
+                <!-- Unique Highlight metric -->
+                <div class="mb-6 bg-[#f8f7f2] rounded-xl p-4 border border-[#1a1a1a]/10">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+                    KEY DELIVERABLE METRIC
+                  </span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#8B5CF6]" style="font-family: 'Playfair Display', serif;">
+                      100%
+                    </span>
+                    <span class="text-[#1a1a1a] text-xs font-semibold tracking-wide font-sans">
+                      Volunteer User Onboarding
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-[#1a1a1a]/60 block mb-2">
+                    STACK COORDINATION
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Figma UI/UX Design</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Stakeholder Training Guides</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Digital Onboarding</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Information Architecture</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- --------------------------------------- -->
+          <!-- GROUP 4: MYANMAR OPERATIONS             -->
+          <!-- --------------------------------------- -->
+          <div class="w-[70vw] md:w-[35vw] lg:w-[25vw] max-w-[400px] flex-shrink-0 flex flex-col justify-center gap-4 pl-0 md:pl-12">
+            <i data-lucide="map-pin" class="w-8 h-8 text-[#8B5CF6]"></i>
+            <h3 class="text-3xl md:text-4xl font-bold text-[#1a1a1a] tracking-tight" style="font-family: 'Playfair Display', serif;">Myanmar<br>Operations</h3>
+            <div class="h-1 w-12 bg-[#F97316] rounded-full mt-2"></div>
+          </div>
+
+          <!-- PROJECT 5: Cross-Sector Local ERP Operations -->
+          <div 
+            id="project-card-local-based-erp"
+            class="w-[85vw] md:w-[68vw] lg:w-[60vw] max-w-[850px] flex-shrink-0 flex flex-col h-auto max-h-[85vh] bg-[#fafaf8] backdrop-blur-md rounded-2xl border border-[#1a1a1a]/15 p-5 md:p-10 relative overflow-y-auto overflow-x-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(26,26,26,0.03)] [&::-webkit-scrollbar]:hidden"
+            style="scrollbar-width: none;"
+          >
+            <!-- Background gradient corresponding to theme -->
+            <div class="absolute -top-1/4 -right-1/4 w-[350px] h-[350px] rounded-full blur-[100px] pointer-events-none opacity-10 bg-[#F97316]"></div>
+
+            <!-- Grid header details -->
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-8 border-b border-black/10 pb-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-wider text-zinc-500">
+                  <span>Myanmar (Local-Based)</span>
+                  <span>•</span>
+                  <span class="text-zinc-[650] font-sans">Global Connect Asia // Local Ops</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight leading-tight" style="font-family: 'Playfair Display', serif;">
+                  Cross-Sector Local ERP Operations
+                </h3>
+                <p class="text-xs md:text-sm font-medium text-zinc-600 uppercase tracking-wider mt-1 font-sans">
+                  Non-Renewable Energy, Mobile Retail & Agriculture
+                </p>
+              </div>
+
+              <span class="inline-block px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest uppercase border bg-[#F97316]/5 border-[#F97316]/30 text-[#F97316]">
+                Multi-Sector Operations
+              </span>
+            </div>
+
+            <!-- Project content split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center lg:items-start grow">
+              
+              <!-- Left Column Description -->
+              <div class="lg:col-span-7 flex flex-col justify-between h-full">
+                <div>
+                  <!-- Active coordinator role stamp -->
+                  <div class="flex items-center gap-2 mb-3 bg-zinc-150/80 border border-black/5 px-2 md:px-3 py-1.5 rounded w-fit">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-[#F97316]"></i>
+                    <span class="text-[9px] md:text-[10px] font-mono tracking-wider uppercase text-zinc-700 font-bold">
+                      Role: Customer Success Engineer
+                    </span>
+                  </div>
+
+                  <p class="text-sm md:text-base text-zinc-700 font-light leading-relaxed mb-4">
+                    Acted as a core customer success engineer to deploy and troubleshoot Odoo optimizations for various local sectors, including the non-renewable energy sector, mobile accessories retail, and agricultural machinery trading businesses.
+                  </p>
+
+                  <div class="space-y-2 mt-4">
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Spearheaded Odoo optimizations to match domestic accounting standards</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Resolved technical complaints and escalated complex issues to development teams</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs text-zinc-[650]">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mt-0.5 min-w-[14px] md:min-w-[16px] text-[#F97316]"></i>
+                      <span class="text-[11px] md:text-xs leading-snug lg:leading-normal font-sans">Maximized overall system usage via direct, hands-on user training programs</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column Stats & Tech Stack tags -->
+              <div class="lg:col-span-5 flex flex-col justify-between h-full border-t lg:border-t-0 lg:border-l border-black/10 pt-4 lg:pt-0 lg:pl-8 mt-2 lg:mt-0">
+                
+                <!-- Unique Highlight metric -->
+                <div class="mb-6 bg-[#f8f7f2] rounded-xl p-4 border border-[#1a1a1a]/10">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+                    KEY DELIVERABLE METRIC
+                  </span>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#F97316]" style="font-family: 'Playfair Display', serif;">
+                      100%
+                    </span>
+                    <span class="text-[#1a1a1a] text-xs font-semibold tracking-wide font-sans">
+                      Local System Optimization
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-[#1a1a1a]/60 block mb-2">
+                    STACK COORDINATION
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Odoo Optimization</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Helpdesk Support</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">User Training</span>
+                    <span class="px-2.5 py-1 bg-white text-zinc-800 rounded text-[10px] border border-black/10 font-mono hover:border-black/30 transition shadow-sm">Incident Triage</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Added spacer for the final horizontal stretch -->
+          <div class="w-[10vw] md:w-[20vw] flex-shrink-0"></div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      EDUCATION & SOFT SKILLS SECTION
+      -----------------------------------------------------------------------------
+    -->
+    <section id="education" class="py-24 md:py-32 px-6 md:px-12 lg:px-24 bg-white relative z-20 border-b border-[#1a1a1a]/10">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+        
+        <div class="lg:col-span-5 flex flex-col justify-center">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]"></div>
+            <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-zinc-500 font-bold">
+              Academic & Fundamental Baseline
+            </span>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-8" style="font-family: 'Playfair Display', Georgia, serif;">
+            Education.
+          </h2>
+          <div class="space-y-6">
+            <div class="group relative pl-6 border-l-2 border-black/10 hover:border-[#8B5CF6] transition-colors edu-animate">
+              <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full border-2 border-white bg-black group-hover:bg-[#8B5CF6] transition-colors"></div>
+              <span class="text-[10px] font-mono text-zinc-500 font-semibold tracking-wider block mb-1">Oct 2024 – Present</span>
+              <h4 class="font-bold text-zinc-900 mb-1 text-lg leading-tight" style="font-family: 'Playfair Display', serif;">Bachelor of Arts in Business Management</h4>
+              <p class="text-xs text-zinc-650 font-sans leading-relaxed">Yangon University of Economics (Third Year)</p>
+            </div>
+            <div class="group relative pl-6 border-l-2 border-black/10 hover:border-[#8B5CF6] transition-colors edu-animate">
+              <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full border-2 border-white bg-black group-hover:bg-[#8B5CF6] transition-colors"></div>
+              <span class="text-[10px] font-mono text-zinc-500 font-semibold tracking-wider block mb-1">2024 – 2027</span>
+              <h4 class="font-bold text-zinc-900 mb-1 text-lg leading-tight" style="font-family: 'Playfair Display', serif;">Diploma In Computing</h4>
+              <p class="text-xs text-zinc-650 font-sans leading-relaxed">KBTC School of IT, NCC Education (UK) – BSc (Hons) Business Computing and Information Systems</p>
+            </div>
+            <div class="group relative pl-6 border-l-2 border-black/10 hover:border-[#8B5CF6] transition-colors edu-animate">
+              <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full border-2 border-white bg-black group-hover:bg-[#8B5CF6] transition-colors"></div>
+              <span class="text-[10px] font-mono text-zinc-500 font-semibold tracking-wider block mb-1">Jul 2023 – May 2024</span>
+              <h4 class="font-bold text-zinc-900 mb-1 text-lg leading-tight" style="font-family: 'Playfair Display', serif;">Diploma in Web Development</h4>
+              <p class="text-xs text-zinc-650 font-sans leading-relaxed">KMD Institute (All Distinctions)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          <div class="bg-[#f8f7f2] rounded-2xl border border-[#1a1a1a]/5 p-8 md:p-12 relative overflow-hidden shadow-sm">
+             <div class="flex items-center gap-2 border-b border-black/10 pb-4 mb-8">
+               <i data-lucide="zap" class="w-5 h-5 text-[#F97316]"></i>
+               <span class="font-semibold tracking-wider text-zinc-950 text-xl font-display" style="font-family: 'Playfair Display', serif;">Soft Skills Matrix</span>
+             </div>
+             
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+               <div class="soft-skill-animate">
+                 <h5 class="font-bold text-sm text-zinc-800 mb-2 border-l-2 border-[#8B5CF6] pl-2">Cross-Cultural Comm.</h5>
+                 <p class="text-xs text-zinc-600 leading-relaxed pl-2.5 font-sans">Bridging technical constraints between international teams across Singapore, Myanmar, and Europe.</p>
+               </div>
+               <div class="soft-skill-animate">
+                 <h5 class="font-bold text-sm text-zinc-800 mb-2 border-l-2 border-[#F97316] pl-2">Stakeholder Management</h5>
+                 <p class="text-xs text-zinc-600 leading-relaxed pl-2.5 font-sans">Translating business pain points into executable ERP solutions and user training materials.</p>
+               </div>
+               <div class="soft-skill-animate">
+                 <h5 class="font-bold text-sm text-zinc-800 mb-2 border-l-2 border-[#8B5CF6] pl-2">Agile Adaptability</h5>
+                 <p class="text-xs text-zinc-600 leading-relaxed pl-2.5 font-sans">Navigating shifting requirements and prioritizing essential design/logic tickets within constraints.</p>
+               </div>
+               <div class="soft-skill-animate">
+                 <h5 class="font-bold text-sm text-zinc-800 mb-2 border-l-2 border-[#F97316] pl-2">Analytical Workflows</h5>
+                 <p class="text-xs text-zinc-600 leading-relaxed pl-2.5 font-sans">Conducting root cause analysis on database mismatches and rectifying complex logical debt.</p>
+               </div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      CONTACT SECTION
+      -----------------------------------------------------------------------------
+    -->
+    <section id="contact" class="py-24 md:py-32 px-6 md:px-12 lg:px-24 border-t border-[#1a1a1a]/10 bg-[#f8f7f2] relative z-20">
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+        
+        <div class="flex items-center justify-center gap-2 mb-6">
+          <div class="w-2 h-2 rounded-full bg-[#8B5CF6] animate-pulse"></div>
+          <span class="text-[10px] font-mono tracking-[0.3em] uppercase text-[#8B5CF6] font-bold">
+            Initiate Contact
+          </span>
+        </div>
+
+        <h2 class="text-4xl md:text-6xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-8" style="font-family: 'Playfair Display', serif;">
+          Ready to Connect.
+        </h2>
+
+        <p class="text-sm md:text-base text-zinc-600 font-sans leading-relaxed mb-12 max-w-2xl">
+          Whether you need to architect an ERP operational pipeline, resolve technical logistics, or map cross-border business logic, I'm ready to synthesize requirements into stable solutions. Let's start the dialogue.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <a 
+            href="mailto:bobo@global-connect.asia"
+            class="bg-[#1a1a1a] hover:bg-black text-white text-sm font-semibold tracking-wide uppercase px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-3 w-full sm:w-auto transform hover:-translate-y-0.5"
+            style="font-family: 'Playfair Display', serif;"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Email Coordination</span>
+          </a>
+          
+          <a 
+            href="https://www.linkedin.com/in/bobo"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white hover:bg-zinc-50 text-zinc-800 border border-[#1a1a1a]/20 text-sm font-semibold tracking-wide uppercase px-8 py-4 rounded-full transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transform hover:-translate-y-0.5"
+            style="font-family: 'Playfair Display', serif;"
+          >
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+            <span>Connect on LinkedIn</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 
+      -----------------------------------------------------------------------------
+      FOOTER METRICS
+      -----------------------------------------------------------------------------
+    -->
+    <footer class="py-12 border-t border-[#1a1a1a]/10 bg-[#f1f0e8] relative z-20 font-sans">
+      <div class="max-w-6xl mx-auto px-6 md:px-12 flex items-center justify-center">
+        <p class="text-xs text-zinc-500 uppercase tracking-widest font-mono text-center">
+          &copy; Bo Bo
+        </p>
+      </div>
+    </footer>
+
+    <!-- Creative Animated Cursor Elements -->
+    <div id="creative-cursor-ring" class="pointer-events-none fixed left-0 top-0 w-10 h-10 border-2 border-dashed border-[#F97316]/60 rounded-full z-[9999] opacity-0 hidden sm:flex items-center justify-center transition-colors duration-300 pointer-events-none"></div>
+    <div id="creative-cursor-dot" class="pointer-events-none fixed left-0 top-0 w-6 h-6 z-[10000] opacity-0 hidden sm:flex items-start justify-start pointer-events-none transition-transform outline-none drop-shadow-md text-[#8B5CF6]">
+      <svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-10deg);">
+        <path d="M4 2.00001C3.69345 1.54019 3 1.76101 3 2.31464V21.1969C3 21.7824 3.73854 22.0427 4.10842 21.5866L10.3644 13.8631L16.6346 12.336L21.3656 11.1837C21.9366 11.0446 22.0152 10.2608 21.5036 10.005L4 2.00001Z" fill="currentColor" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Interactive Client-side Script Controls -->
+    <script>
+      // Register ScrollTrigger with GSAP on load
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Create Lucide Icons
+      lucide.createIcons();
+
+      // Ensure single-file is fully ready
+      window.addEventListener('DOMContentLoaded', () => {
+
+        // -------------------------------------------------------------
+        // Dark Mode Toggle Logic
+        // -------------------------------------------------------------
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const moonIcon = document.querySelector('.toggle-icon-moon');
+        const sunIcon = document.querySelector('.toggle-icon-sun');
+
+        if (darkModeToggle) {
+          darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-theme');
+            if (document.documentElement.classList.contains('dark-theme')) {
+              moonIcon.classList.add('hidden');
+              sunIcon.classList.remove('hidden');
+            } else {
+              moonIcon.classList.remove('hidden');
+              sunIcon.classList.add('hidden');
+            }
+          });
+        }
+
+        // -------------------------------------------------------------
+        // Creative Animated Cursor Logic
+        // -------------------------------------------------------------
+        if (window.matchMedia("(min-width: 1024px)").matches) {
+          const cursorRing = document.getElementById('creative-cursor-ring');
+          const cursorDot = document.getElementById('creative-cursor-dot');
+          
+          if (cursorRing && cursorDot) {
+            // Apply CSS class to hide native cursor
+            document.body.classList.add('hide-native-cursor');
+
+            gsap.set(cursorRing, { xPercent: -50, yPercent: -50 });
+            gsap.set(cursorDot, { xPercent: -15, yPercent: -10 }); // Align custom pointer tip
+
+            const xToRing = gsap.quickTo(cursorRing, "x", {duration: 0.4, ease: "power3"});
+            const yToRing = gsap.quickTo(cursorRing, "y", {duration: 0.4, ease: "power3"});
+            
+            const xToDot = gsap.quickTo(cursorDot, "x", {duration: 0, ease: "none"});
+            const yToDot = gsap.quickTo(cursorDot, "y", {duration: 0, ease: "none"});
+
+            let cursorVisible = false;
+
+            // Spin the dashed ring infinitely for creative effect
+            gsap.to(cursorRing, { rotation: 360, duration: 8, repeat: -1, ease: "linear" });
+
+            window.addEventListener("mousemove", e => {
+              if (!cursorVisible) {
+                gsap.to([cursorRing, cursorDot], { opacity: 1, duration: 0.3 });
+                cursorVisible = true;
+              }
+              xToRing(e.clientX);
+              yToRing(e.clientY);
+              xToDot(e.clientX);
+              yToDot(e.clientY);
+            });
+
+            // Hover effect for clickables
+            const clickables = document.querySelectorAll('a, button, .magnetic-card');
+            clickables.forEach(el => {
+              el.addEventListener('mouseenter', () => {
+                gsap.to(cursorRing, { scale: 1.8, borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.05)', duration: 0.3 });
+                gsap.to(cursorDot, { scale: 0.9, rotation: -15, color: '#F97316', duration: 0.3 });
+              });
+              el.addEventListener('mouseleave', () => {
+                gsap.to(cursorRing, { scale: 1, borderColor: 'rgba(249, 115, 22, 0.6)', backgroundColor: 'transparent', duration: 0.3 });
+                gsap.to(cursorDot, { scale: 1, rotation: 0, color: '#8B5CF6', duration: 0.3 });
+              });
+            });
+            
+            // Adjust dark mode logic to update cursor color if necessary
+            // Here mix-blend-difference is applied so it naturally works well on light and dark.
+          }
+        }
+
+        // -------------------------------------------------------------
+        // Floating Background Creative Icons (Shadows)
+        // -------------------------------------------------------------
+        const floatingContainer = document.getElementById('floating-icons');
+        if (floatingContainer && window.gsap && window.lucide) {
+          const iconNames = ['sparkles', 'compass', 'code', 'layers', 'briefcase', 'zap', 'figma', 'monitor', 'cpu', 'database'];
+          const numIcons = 6;
+
+          for (let i = 0; i < numIcons; i++) {
+            const wrapper = document.createElement('div');
+            
+            // Random initial placement
+            wrapper.style.position = 'absolute';
+            wrapper.style.left = `${Math.random() * 100}vw`;
+            wrapper.style.top = `${Math.random() * 100}vh`;
+            
+            const iconEl = document.createElement('i');
+            const randomIcon = iconNames[Math.floor(Math.random() * iconNames.length)];
+            iconEl.setAttribute('data-lucide', randomIcon);
+            
+            const size = Math.random() * 80 + 80; // 80px to 160px
+            iconEl.style.width = `${size}px`;
+            iconEl.style.height = `${size}px`;
+            iconEl.style.color = '#1a1a1a';
+            // Dark mode inversion happens at root, so keeping it #1a1a1a is fine
+            
+            // "fade moving in background as shadow"
+            iconEl.style.filter = 'drop-shadow(0 20px 30px rgba(0,0,0,0.5)) blur(2px)';
+            iconEl.style.opacity = (Math.random() * 0.5 + 0.3).toString();
+
+            wrapper.appendChild(iconEl);
+            floatingContainer.appendChild(wrapper);
+
+            // GSAP smooth random floating and fading
+            gsap.to(wrapper, {
+              x: (Math.random() - 0.5) * 400,
+              y: (Math.random() - 0.5) * 400,
+              rotation: Math.random() * 180 - 90,
+              duration: Math.random() * 20 + 20,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut"
+            });
+
+            gsap.to(iconEl, {
+              opacity: Math.random() * 0.6 + 0.4, // Fade in and out
+              duration: Math.random() * 10 + 10,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut"
+            });
+          }
+          
+          // Render the icons
+          window.lucide.createIcons({ root: floatingContainer });
+        }
+        
+        // -------------------------------------------------------------
+        // Canvas Particles Background Dynamics
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('bg-canvas');
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          let animationFrameId;
+          let width = (canvas.width = window.innerWidth);
+          let height = (canvas.height = window.innerHeight);
+
+          const handleResize = () => {
+            if (canvas) {
+              width = canvas.width = window.innerWidth;
+              height = canvas.height = window.innerHeight;
+            }
+          };
+          window.addEventListener('resize', handleResize);
+
+          const particles = [];
+          for (let i = 0; i < 45; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 0.4,
+              vy: (Math.random() - 0.5) * 0.4,
+              radius: Math.random() * 2 + 1,
+              color: Math.random() > 0.5 ? 'rgba(26, 26, 26, 0.08)' : 'rgba(139, 92, 246, 0.12)'
+            });
+          }
+
+          let mouseX = 0;
+          let mouseY = 0;
+          const handleMouseMove = (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+          };
+          window.addEventListener('mousemove', handleMouseMove);
+
+          const draw = () => {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+
+            // Sleek structural grids
+            ctx.strokeStyle = 'rgba(26, 26, 26, 0.025)';
+            ctx.lineWidth = 1;
+            const gridSize = 80;
+            for (let x = 0; x < width; x += gridSize) {
+              ctx.beginPath();
+              ctx.moveTo(x, 0);
+              ctx.lineTo(x, height);
+              ctx.stroke();
+            }
+            for (let y = 0; y < height; y += gridSize) {
+              ctx.beginPath();
+              ctx.moveTo(0, y);
+              ctx.lineTo(width, y);
+              ctx.stroke();
+            }
+
+            // Move and draw particles
+            particles.forEach((p, idx) => {
+              p.x += p.vx;
+              p.y += p.vy;
+
+              if (p.x < 0) p.x = width;
+              if (p.x > width) p.x = 0;
+              if (p.y < 0) p.y = height;
+              if (p.y > height) p.y = 0;
+
+              if (mouseX > 0 && mouseY > 0) {
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 280) {
+                  p.x += (dx / dist) * 0.15;
+                  p.y += (dy / dist) * 0.15;
+                }
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = p.color;
+              ctx.fill();
+
+              for (let j = idx + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 180) {
+                  ctx.strokeStyle = `rgba(26, 26, 26, ${0.04 * (1 - dist / 180)})`;
+                  ctx.lineWidth = 0.5;
+                  ctx.beginPath();
+                  ctx.moveTo(p.x, p.y);
+                  ctx.lineTo(p2.x, p2.y);
+                  ctx.stroke();
+                }
+              }
+            });
+
+            if (mouseX > 0 && mouseY > 0) {
+              const auraRad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 300);
+              auraRad.addColorStop(0, 'rgba(139, 92, 246, 0.015)');
+              auraRad.addColorStop(0.5, 'rgba(26, 26, 26, 0.005)');
+              auraRad.addColorStop(1, 'rgba(0,0,0,0)');
+              ctx.fillStyle = auraRad;
+              ctx.beginPath();
+              ctx.arc(mouseX, mouseY, 300, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            animationFrameId = requestAnimationFrame(draw);
+          };
+
+          draw();
+        }
+
+        // -------------------------------------------------------------
+        // Hero Entrance Title reveal (Splits equivalent sequence)
+        // -------------------------------------------------------------
+        const tl = gsap.timeline();
+
+        tl.fromTo('.reveal-badge', 
+          { opacity: 0, y: -20, scale: 0.95 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }
+        );
+
+        tl.fromTo('.reveal-word',
+          { opacity: 0, y: 40, rotateX: -15 },
+          { opacity: 1, y: 0, rotateX: 0, duration: 1.2, stagger: 0.08, ease: 'power4.out' },
+          '-=0.5'
+        );
+
+        tl.fromTo('.reveal-sub',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 1.0, stagger: 0.15, ease: 'power3.out' },
+          '-=0.7'
+        );
+
+        // -------------------------------------------------------------
+        // Pinned Horizontal Scrub Gallery & Project Highlight Scrolling
+        // -------------------------------------------------------------
+        const horizontalSection = document.getElementById('horizontal-section');
+        const triggerRef = document.getElementById('projects-pin-trigger');
+
+        if (horizontalSection && triggerRef) {
+          const getScrollAmount = () => {
+            return horizontalSection.scrollWidth - window.innerWidth;
+          };
+
+          const horizontalTween = gsap.to(horizontalSection, {
+            x: () => -getScrollAmount(),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: triggerRef,
+              pin: true,
+              scrub: 1,
+              start: 'top top',
+              end: () => `+=${getScrollAmount()}`,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
+            }
+          });
+
+          // Parallax background layer movement matching
+          gsap.to('.parallax-bg', {
+            x: () => -(getScrollAmount() * 0.4),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: triggerRef,
+              scrub: 1,
+              start: 'top top',
+              end: () => `+=${getScrollAmount()}`,
+              invalidateOnRefresh: true,
+            }
+          });
+
+          // Project cards sequential entrance scrubbing highlights
+          const projectIds = ['min-jiang-kueh', 'vehicle-tracking', 'home-appliance-erp', 'ngo-france', 'local-based-erp'];
+          projectIds.forEach((id) => {
+            const card = document.getElementById(`project-card-${id}`);
+            if (card) {
+              gsap.fromTo(card,
+                { y: 60, opacity: 0.7 },
+                {
+                  y: 0,
+                  opacity: 1,
+                  scrollTrigger: {
+                    trigger: card,
+                    containerAnimation: horizontalTween,
+                    start: 'left right-=100',
+                    end: 'center center',
+                    scrub: true,
+                  }
+                }
+              );
+            }
+          });
+        }
+
+        // -------------------------------------------------------------
+        // Toolkit Floating Cards loop animations
+        // -------------------------------------------------------------
+        gsap.fromTo('.magnetic-card-parent',
+          { opacity: 0.8, y: 15 },
+          {
+            opacity: 1,
+            y: -10,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            stagger: 0.25,
+            ease: "sine.inOut"
+          }
+        );
+
+        // -------------------------------------------------------------
+        // Magnetic Cards Interactive Movement Logic
+        // -------------------------------------------------------------
+        document.querySelectorAll('.magnetic-card').forEach((card) => {
+          const color = card.getAttribute('data-theme-color'); // 'orange' or 'violet'
+
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const px = (x - centerX) / centerX;
+            const py = (y - centerY) / centerY;
+
+            const magnetX = px * 14; 
+            const magnetY = py * 14; 
+
+            card.style.transform = `translate3d(${magnetX}px, ${magnetY}px, 0) scale3d(1.02, 1.02, 1.02)`;
+            card.style.setProperty('--glow-x', `${x}px`);
+            card.style.setProperty('--glow-y', `${y}px`);
+            card.style.setProperty('--glow-opacity', '1');
+            card.style.borderColor = color === 'orange' ? '#F97316' : '#8B5CF6';
+            card.style.boxShadow = color === 'orange' 
+              ? '0 10px 30px -10px rgba(249, 115, 22, 0.25)' 
+              : '0 10px 30px -10px rgba(139, 92, 246, 0.25)';
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = `translate3d(0px, 0px, 0) scale3d(1, 1, 1)`;
+            card.style.setProperty('--glow-opacity', '0');
+            card.style.borderColor = 'rgba(26, 26, 26, 0.1)';
+            card.style.boxShadow = 'none';
+          });
+        });
+
+        // -------------------------------------------------------------
+        // Scroll Driven Academic Revelations
+        // -------------------------------------------------------------
+        const eduAnimateItems = document.querySelectorAll('.edu-animate');
+        if (eduAnimateItems.length > 0) {
+          gsap.fromTo(eduAnimateItems,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1, 
+              y: 0, 
+              stagger: 0.15, 
+              duration: 0.8, 
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: '#education',
+                start: 'top bottom-=100',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          );
+        }
+
+        const softSkillItems = document.querySelectorAll('.soft-skill-animate');
+        if (softSkillItems.length > 0) {
+          gsap.fromTo(softSkillItems,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1, 
+              y: 0, 
+              stagger: 0.1, 
+              duration: 0.6, 
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: '#education',
+                start: 'top bottom-=100',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          );
+        }
+
+      });
+    </script>
   </body>
 </html>
-
