@@ -1079,12 +1079,8 @@
     </footer>
 
     <!-- Creative Animated Cursor Elements -->
-    <div id="creative-cursor-ring" class="pointer-events-none fixed left-0 top-0 w-10 h-10 border-2 border-dashed border-[#F97316]/60 rounded-full z-[9999] opacity-0 hidden sm:flex items-center justify-center transition-colors duration-300 pointer-events-none"></div>
-    <div id="creative-cursor-dot" class="pointer-events-none fixed left-0 top-0 w-6 h-6 z-[10000] opacity-0 hidden sm:flex items-start justify-start pointer-events-none transition-transform outline-none drop-shadow-md text-[#8B5CF6]">
-      <svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-10deg);">
-        <path d="M4 2.00001C3.69345 1.54019 3 1.76101 3 2.31464V21.1969C3 21.7824 3.73854 22.0427 4.10842 21.5866L10.3644 13.8631L16.6346 12.336L21.3656 11.1837C21.9366 11.0446 22.0152 10.2608 21.5036 10.005L4 2.00001Z" fill="currentColor" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
-      </svg>
-    </div>
+    <div id="creative-cursor-ring" class="pointer-events-none fixed left-0 top-0 w-8 h-8 md:w-10 md:h-10 border border-[#F97316]/60 rounded-full z-[9999] opacity-0 hidden sm:flex items-center justify-center transition-colors duration-300 pointer-events-none mix-blend-difference"></div>
+    <div id="creative-cursor-dot" class="pointer-events-none fixed left-0 top-0 w-1.5 h-1.5 md:w-2 md:h-2 bg-[#8B5CF6] rounded-full z-[10000] opacity-0 hidden sm:block pointer-events-none mix-blend-difference"></div>
 
     <!-- Interactive Client-side Script Controls -->
     <script>
@@ -1129,18 +1125,15 @@
             document.body.classList.add('hide-native-cursor');
 
             gsap.set(cursorRing, { xPercent: -50, yPercent: -50 });
-            gsap.set(cursorDot, { xPercent: -15, yPercent: -10 }); // Align custom pointer tip
+            gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
 
-            const xToRing = gsap.quickTo(cursorRing, "x", {duration: 0.4, ease: "power3"});
-            const yToRing = gsap.quickTo(cursorRing, "y", {duration: 0.4, ease: "power3"});
+            const xToRing = gsap.quickTo(cursorRing, "x", {duration: 0.3, ease: "power3"});
+            const yToRing = gsap.quickTo(cursorRing, "y", {duration: 0.3, ease: "power3"});
             
             const xToDot = gsap.quickTo(cursorDot, "x", {duration: 0, ease: "none"});
             const yToDot = gsap.quickTo(cursorDot, "y", {duration: 0, ease: "none"});
 
             let cursorVisible = false;
-
-            // Spin the dashed ring infinitely for creative effect
-            gsap.to(cursorRing, { rotation: 360, duration: 8, repeat: -1, ease: "linear" });
 
             window.addEventListener("mousemove", e => {
               if (!cursorVisible) {
@@ -1157,12 +1150,12 @@
             const clickables = document.querySelectorAll('a, button, .magnetic-card');
             clickables.forEach(el => {
               el.addEventListener('mouseenter', () => {
-                gsap.to(cursorRing, { scale: 1.8, borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.05)', duration: 0.3 });
-                gsap.to(cursorDot, { scale: 0.9, rotation: -15, color: '#F97316', duration: 0.3 });
+                gsap.to(cursorRing, { scale: 1.5, borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.1)', duration: 0.3 });
+                gsap.to(cursorDot, { scale: 0, duration: 0.3 });
               });
               el.addEventListener('mouseleave', () => {
                 gsap.to(cursorRing, { scale: 1, borderColor: 'rgba(249, 115, 22, 0.6)', backgroundColor: 'transparent', duration: 0.3 });
-                gsap.to(cursorDot, { scale: 1, rotation: 0, color: '#8B5CF6', duration: 0.3 });
+                gsap.to(cursorDot, { scale: 1, duration: 0.3 });
               });
             });
             
