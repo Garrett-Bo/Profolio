@@ -1,0 +1,8 @@
+{
+  "name": "Bo Bo Profolio",
+  "description": "An immersive, high-end portfolio showcasing Odoo ERP Project Coordination, Business Analysis, and UI/UX Design validation. Featuring split-text reveals, magnetic skill cards, and an interactive horizontal scroll timeline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
